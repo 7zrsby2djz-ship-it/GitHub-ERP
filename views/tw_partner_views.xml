@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Partner Form View Inherit -->
+        <record id="view_partner_form_inherit_tw" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit.tw</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="台灣發票設定">
+                        <group>
+                            <group>
+                                <field name="tw_vat" placeholder="請輸入8碼統一編號"/>
+                                <field name="tw_invoice_type" readonly="True"/>
+                            </group>
+                            <group>
+                                <field name="tw_prefer_carrier_type"/>
+                                <field name="tw_prefer_carrier_num"
+                                       invisible="tw_prefer_carrier_type == 'none'"
+                                       placeholder="手機條碼8碼(如/NET0MV2) 或自然人憑證16碼"
+                                       required="tw_prefer_carrier_type in ['mobile_barcode', 'citizen_cert', 'donation_code']"
+                                       style="width: 100%%"/>
+                                <field name="tw_prefer_donation_unit"
+                                       invisible="tw_prefer_carrier_type != 'donation_code'"
+                                       required="tw_prefer_carrier_type == 'donation_code'"/>
+                                <field name="tw_carrier_display" readonly="True"/>
+                            </group>
+                        </group>
+
+                        <!-- Carrier Usage History -->
+                        <!-- Temporarily disabled due to Odoo 19 tree view validation issues -->
+                        <!--
+                        <group string="Carrier Usage Records" invisible="not carrier_history_ids">
+                            <field name="carrier_history_ids" nolabel="1">
+                                <tree>
+                                    <field name="invoice_date"/>
+                                    <field name="carrier_type"/>
+                                    <field name="invoice_amount"/>
+                                </tree>
+                            </field>
+                        </group>
+                        -->
+                    </page>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

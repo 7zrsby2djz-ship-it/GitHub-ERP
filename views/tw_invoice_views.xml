@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Invoice Form View Inherit - Taiwan Invoice Fields & Account Visibility -->
+        <record id="view_move_form_inherit_tw" model="ir.ui.view">
+            <field name="name">account.move.form.inherit.tw</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <!-- Add Taiwan Invoice fields inside header_left_group, after partner shipping -->
+                <xpath expr="//group[@id='header_left_group']/field[@name='partner_shipping_id']" position="after">
+                    <field name="tw_invoice_type" invisible="move_type not in ('out_invoice', 'out_refund')" readonly="state != 'draft'"/>
+                    <field name="tw_buyer_vat"
+                           invisible="tw_invoice_type != 'tw_triple'"
+                           required="tw_invoice_type == 'tw_triple'"
+                           placeholder="請輸入8碼統一編號"
+                           readonly="state != 'draft'"/>
+                    <field name="tw_buyer_name"
+                           invisible="tw_invoice_type != 'tw_triple'"
+                           readonly="state != 'draft'"/>
+                    <field name="tw_carrier_type"
+                           invisible="tw_invoice_type != 'tw_double'"/>
+                    <field name="tw_carrier_num"
+                           invisible="tw_invoice_type != 'tw_double' or tw_carrier_type == 'none'"
+                           placeholder="手機條碼8碼(如/NET0MV2) 或自然人憑證16碼"
+                           required="tw_invoice_type == 'tw_double' and tw_carrier_type in ['mobile_barcode', 'citizen_cert', 'donation_code']"
+                           readonly="state != 'draft'"/>
+                    <field name="tw_donation_unit"
+                           invisible="tw_carrier_type != 'donation_code'"
+                           required="tw_carrier_type == 'donation_code'"
+                           placeholder="請輸入3~7碼捐贈單位代碼"
+                           readonly="state != 'draft'"/>
+                </xpath>
+
+                <!-- Make account_id column always visible (remove groups restriction) in invoice lines -->
+                <xpath expr="//list[@name='journal_items']/field[@name='account_id']" position="attributes">
+                    <attribute name="groups"/>
+                    <attribute name="string">會計科目</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
